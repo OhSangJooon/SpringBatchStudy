@@ -1,11 +1,3 @@
-/*
- * You are strictly prohibited to copy, disclose, distribute, modify, or use this program in part
- * or as a whole without the prior written consent of Starbucks Coffee Company.
- * Starbucks Coffee Company owns the intellectual property rights in and to this program.
- *
- * (Copyright ⓒ2022 Starbucks Coffee Company. All Rights Reserved | Confidential)
- */
-
 package com.ani.study.configuration;
 
 import jakarta.persistence.EntityManagerFactory;
@@ -16,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -27,8 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableTransactionManagement
-@Lazy
+@EnableTransactionManagement // 트랜잭션 관리 활성화. @Transactional 을 사용해 선언적 트랜잭션으로 관리가 가능
 @EnableJpaRepositories(
     entityManagerFactoryRef = "batchEntityManagerFactory",
     transactionManagerRef = "batchTransactionManager",
@@ -48,14 +38,20 @@ public class TransactionManagerConfig {
     @Value("${spring.jpa.properties.hibernate.hbm2ddl-auto}")
     private String hbm2ddlAuto;
 
+    /**
+     * JPA 구현체에 대한 설정을 반환
+     * */
     public JpaVendorAdapter jpaVendorAdapter() {
         HibernateJpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
-        jpaVendorAdapter.setShowSql(true);
+        jpaVendorAdapter.setShowSql(true); // 로그 출력
         return jpaVendorAdapter;
     }
 
+    /**
+     * 엔티티 매니저 팩토리 빈 생성
+     * */
     @Bean(name = "batchEntityManagerFactory")
-    @Primary
+    @Primary // 기본 EntityManagerFactory 설정
     public LocalContainerEntityManagerFactoryBean batchEntityManagerFactory(@Qualifier("batchDataSource") DataSource dataSource) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
@@ -65,6 +61,9 @@ public class TransactionManagerConfig {
         return em;
     }
 
+    /**
+     * 하이버네이트 관련 설정 반환
+     * */
     private Map<String, ?> hibernateJpaProperties() {
         HashMap<String, String> properties = new HashMap<>();
 
@@ -76,6 +75,9 @@ public class TransactionManagerConfig {
         return properties;
     }
 
+    /**
+     * 트랜잭션 매니저 설정
+     * */
     @Bean(name = "batchTransactionManager")
     @Primary
     public PlatformTransactionManager batchTransactionManager(@Qualifier("batchEntityManagerFactory") EntityManagerFactory entityManagerFactory) {

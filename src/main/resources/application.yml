@@ -19,31 +19,31 @@ spring:
         storage-engine: innodb
         hbm2ddl-auto: none  # must be none
         show-sql: true
-        format_sql: true          # ??? ??
-        use_sql_comments: true    # jpql ??
+        format_sql: true          # 포매터 적용
+        use_sql_comments: true    # jpql 출력
 
   batch:
     job:
-      enabled: false # ?? ???? ?? ???? ??
+      enabled: false
     jdbc:
-      initialize-schema: always # always: ??????? ??? ??? ???? ??? / never: ???? ???? ????? ??? ?? / embedded: ??????? ???? ??(H2 ?)? ?? ???? ???
+      initialize-schema: always # always: 배치 메타테이블 항상 생성 / never: 생성하지 않음 / embedded: H2 DB 인 경우 생성
 
 logging:
   level:
     root: INFO
     org:
       hibernate:
-        SQL: DEBUG # ??? ??? ??
+        SQL: DEBUG
         type:
-          descriptor.sql.basicBinder: TRACE # ??? ???? ??
+          descriptor.sql.basicBinder: TRACE
           BasicTypeRegistry: WARN
-        transaction.JDBCTransaction: DEBUG # ???? ?? ??
+        transaction.JDBCTransaction: DEBUG
         jdbc.connectionManager: DEBUG
-    org.springframework.orm.jpa.JpaTransactionManager: DEBUG # ???? ?? ??
+    org.springframework.orm.jpa.JpaTransactionManager: DEBUG
     org.springframework.boot.autoconfigure: ERROR
     org.springframework.data.repository.config: ERROR
-    io.swagger.models.parameters.AbstractSerializableParameter: ERROR # ApiModelProperty? ?? ???? ????
-    com.zaxxer.hikari: DEBUG # hikari ?? ??
+    io.swagger.models.parameters.AbstractSerializableParameter: ERROR
+    com.zaxxer.hikari: DEBUG
     jdbc:
       audit: off
       connection: off
