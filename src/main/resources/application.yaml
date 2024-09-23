@@ -1,0 +1,54 @@
+spring:
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mysql://127.0.0.1:43306/TESTDB?allowMultiQueries=true
+    username: root
+    password: 1234
+    hikari:
+      connection-timeout: 3000
+      max-lifetime: 1740000
+      maximum-pool-size: 20
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        storage-engine: innodb
+        hbm2ddl-auto: none  # must be none
+        show-sql: true
+        format_sql: true          # ??? ??
+        use_sql_comments: true    # jpql ??
+
+  batch:
+    job:
+      enabled: false # ?? ???? ?? ???? ??
+    jdbc:
+      initialize-schema: always # always: ??????? ??? ??? ???? ??? / never: ???? ???? ????? ??? ?? / embedded: ??????? ???? ??(H2 ?)? ?? ???? ???
+
+logging:
+  level:
+    root: INFO
+    org:
+      hibernate:
+        SQL: DEBUG # ??? ??? ??
+        type:
+          descriptor.sql.basicBinder: TRACE # ??? ???? ??
+          BasicTypeRegistry: WARN
+        transaction.JDBCTransaction: DEBUG # ???? ?? ??
+        jdbc.connectionManager: DEBUG
+    org.springframework.orm.jpa.JpaTransactionManager: DEBUG # ???? ?? ??
+    org.springframework.boot.autoconfigure: ERROR
+    org.springframework.data.repository.config: ERROR
+    io.swagger.models.parameters.AbstractSerializableParameter: ERROR # ApiModelProperty? ?? ???? ????
+    com.zaxxer.hikari: DEBUG # hikari ?? ??
+    jdbc:
+      audit: off
+      connection: off
+      sqlonly: debug
+      resultset: off
+      resultsettable: info
+      sqltiming: debug
+    com.ani.study: info
