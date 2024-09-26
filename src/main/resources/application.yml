@@ -26,7 +26,7 @@ spring:
     job:
       enabled: false
     jdbc:
-      initialize-schema: always # always: 배치 메타테이블 항상 생성 / never: 생성하지 않음 / embedded: H2 DB 인 경우 생성
+      initialize-schema: never # always: 배치 메타테이블 항상 생성 / never: 생성하지 않음 / embedded: H2 DB 인 경우 생성
 
 logging:
   level:
