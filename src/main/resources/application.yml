@@ -27,6 +27,39 @@ spring:
       enabled: false
     jdbc:
       initialize-schema: never # always: 배치 메타테이블 항상 생성 / never: 생성하지 않음 / embedded: H2 DB 인 경우 생성
+  # quartz Configuration
+  quartz:
+    scheduler-name: test-quartz
+    job-store-type: jdbc # 스케줄 정보를 jdbc로 관리하도록 설정
+    jdbc:
+      initialize-schema: always # Quartz 관련 테이블을 자동으로 생성할지 여부를 결정.
+                                # - always: 애플리케이션이 실행될 때마다 Quartz의 테이블을 자동으로 생성. (임베디드 DB 또는 빈 DB에서만 유효)
+                                # - never: 테이블을 생성하지 않음 (사용자가 직접 DDL 스크립트를 실행해야 함).
+                                # - embedded: 임베디드 DB를 사용하는 경우에만 자동으로 테이블 생성.
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: TestQuartzScheduler # 스케줄러의 이름을 지정. 클러스터링 시 각 인스턴스가 고유한 이름을 가질 수 있도록 설정.
+            instanceId: AUTO # 스케줄러 인스턴스의 고유 ID. 'AUTO'로 설정하면 Quartz가 자동으로 각 인스턴스에 고유 ID를 할당함.
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX # Quartz에서 사용하는 JobStore 클래스를 지정.
+                                                           # JobStoreTX는 트랜잭션을 지원하는 데이터베이스 기반 JobStore로, 스케줄 정보가 데이터베이스에 저장됨.
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate # 사용하는 DB의 JDBC 드라이버에 맞는 Delegate 클래스를 지정.
+                          # 기본적으로 표준 JDBC를 사용하며, 데이터베이스에 맞는 Delegate를 지정해야 할 수도 있음 (예: MySQL, PostgreSQL 등).
+            dataSource: batchDataSource # Quartz에서 사용할 데이터소스 지정.
+            tablePrefix: QRTZ_ # 데이터베이스 테이블의 이름에 사용할 접두어.
+            isClustered: false # Quartz가 클러스터 모드에서 실행될지 여부.
+                              # true로 설정하면 여러 노드에서 스케줄러를 실행할 수 있고, 하나의 잡을 여러 인스턴스에서 동시에 실행하지 않도록 조율.
+                              # false로 설정하면 단일 노드에서만 실행됨.
+          threadPool: # Quartz가 사용할 스레드 수를 지정. 잡을 처리할 때 동시에 실행할 수 있는 스레드의 수.
+            threadCount: 2
+          dataSource:
+            url: jdbc:log4jdbc:mysql://127.0.0.1:43306/TESTDB?allowMultiQueries=true
+            username: root
+            password: 1234
+    auto-startup: true # 서버가 시작될 때 스케줄러가 자동으로 시작됨
+
 
 logging:
   level:
